@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Logo Designer — Bargain Drop</title>
+<style>
+:root{--bg:#fff;--fg:#111;--muted:#777;--line:#eee;--accent:#ff6b2b}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--fg);padding-bottom:80px}
+a{color:inherit;text-decoration:none}
+
+.top-bar{display:flex;align-items:center;justify-content:space-between;padding:6px 16px;background:#111;color:#fff;font-size:0.7rem;position:sticky;top:0;z-index:110}
+.top-bar a{color:#fff}
+.page-header{padding:16px;border-bottom:1px solid var(--line)}
+.page-header h1{font-size:1.1rem;font-weight:800;margin-bottom:2px}
+.page-header p{font-size:0.72rem;color:var(--muted)}
+
+.preview-sticky{position:sticky;top:32px;z-index:100;background:linear-gradient(135deg,#fafafa,#fff);padding:16px;border-bottom:2px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:8px}
+.preview-label{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.preview-box{display:flex;align-items:center;gap:10px;padding:14px 22px;background:#fff;border-radius:14px;border:2px solid var(--line);min-height:56px;transition:all .2s}
+.selected-info{font-size:0.68rem;color:var(--accent);font-weight:700}
+.btn-apply{padding:10px 28px;background:var(--fg);color:#fff;border:none;border-radius:20px;font-size:0.75rem;font-weight:700;cursor:pointer;transition:all .15s}
+.btn-apply:hover{opacity:.9;transform:translateY(-1px)}
+
+.designs-section{padding:12px 16px}
+.section-title{font-size:0.82rem;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.design-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.design-card{padding:14px 10px;background:#fff;border:2px solid var(--line);border-radius:12px;cursor:pointer;text-align:center;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:6px;min-height:80px;justify-content:center}
+.design-card:hover{border-color:#ccc;transform:translateY(-1px);box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.design-card.selected{border-color:var(--fg);background:#fafafa;box-shadow:0 0 0 3px rgba(0,0,0,.05)}
+.design-card .dc-logo{font-size:1.8rem;font-weight:900;display:flex;align-items:center;gap:4px;line-height:1}
+.design-card .dc-num{font-size:0.58rem;color:var(--muted);position:absolute;top:6px;right:8px}
+.design-card .dc-style{font-size:0.6rem;color:var(--muted)}
+.design-card{position:relative}
+.design-card .dc-check{position:absolute;top:6px;right:8px;width:18px;height:18px;border-radius:50%;background:var(--fg);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.55rem;display:none}
+.design-card.selected .dc-check{display:flex}
+.design-card.selected .dc-num{display:none}
+
+@media(min-width:768px){.design-grid{grid-template-columns:repeat(4,1fr);max-width:960px;margin:0 auto}}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;z-index:120;padding:4px 0}
+.bottom-nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px;font-size:0.6rem;color:var(--muted);text-decoration:none}
+.bottom-nav a.active{color:var(--fg)}
+.nav-icon{width:20px;height:20px;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="top-bar"><a href="index.html">← Back</a><div>Pick Your Logo</div></div>
+<div class="page-header"><h1>Choose Your Logo</h1><p>50 unique Bargain Drop logo designs — click to preview, apply to save</p></div>
+
+<div class="preview-sticky" id="previewSticky">
+  <span class="preview-label">Live Preview</span>
+  <div class="preview-box" id="previewBox"><span style="font-size:2rem">🎯</span></div>
+  <span class="selected-info" id="selectedInfo">Tap a design below</span>
+  <button class="btn-apply" onclick="applyDesign()">✅ Apply This Logo</button>
+</div>
+
+<div class="designs-section">
+  <div class="section-title"><svg width="18" height="18" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1" stroke="#111" stroke-width="1.8" fill="none"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="#111" stroke-width="1.8" fill="none"/><rect x="3" y="14" width="7" height="7" rx="1" stroke="#111" stroke-width="1.8" fill="none"/><rect x="14" y="14" width="7" height="7" rx="1" stroke="#111" stroke-width="1.8" fill="none"/></svg> 50 Logo Designs</div>
+  <div class="design-grid" id="designGrid"></div>
+</div>
+
+<nav class="bottom-nav">
+  <a href="index.html"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3" stroke="#777" stroke-width="2" fill="none"/></svg>Home</a>
+  <a href="products.html"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1" stroke="#777" stroke-width="1.5" fill="none"/></svg>Products</a>
+  <a href="categories.html"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="#777" stroke-width="2"/></svg>Categories</a>
+  <a href="#"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" stroke="#777" stroke-width="1.5" fill="none"/></svg>Wishlist</a>
+  <a href="profile.html"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="#777" stroke-width="2" fill="none"/><circle cx="12" cy="7" r="4" stroke="#777" stroke-width="2" fill="none"/></svg>Me</a>
+</nav>
+
+<script>
+var selectedId = null;
+var designs = [
+  {id:1, b:{text:'Bargain',color:'#ff2d55',weight:900}, d:{text:'Drop',color:'#111',weight:900}, icon:'🏷️', style:'Classic Pink+Black'},
+  {id:2, b:{text:'BARGAIN',color:'#111',weight:900}, d:{text:'DROP',color:'#ff2d55',weight:900}, icon:'💎', style:'All Caps Bold'},
+  {id:3, b:{text:'bargain',color:'#ff6b2b',weight:400}, d:{text:'drop',color:'#111',weight:900}, icon:'🔥', style:'Thin+Thick'},
+  {id:4, b:{text:'Bargain',color:'#7c3aed',weight:800}, d:{text:'Drop',color:'#f59e0b',weight:800}, icon:'⚡', style:'Purple+Gold'},
+  {id:5, b:{text:'Bargain',color:'#e60023',weight:700}, d:{text:'Drop',color:'#1a1a2e',weight:900}, icon:'🛒', style:'Red+Dark'},
+  {id:6, b:{text:'Bargain',color:'#0ea5e9',weight:700}, d:{text:'Drop',color:'#0284c7',weight:900}, icon:'💧', style:'Ocean Blue'},
+  {id:7, b:{text:'BARGAIN',color:'#111',weight:700}, d:{text:'drop',color:'#10b981',weight:900,style:'italic'}, icon:'✨', style:'Bold+Green Italic'},
+  {id:8, b:{text:'Bargain',color:'#f97316',weight:800}, d:{text:'Drop',color:'#111',weight:600}, icon:'📦', style:'Orange Bold'},
+  {id:9, b:{text:'Bargain',color:'#111',weight:900}, d:{text:'DROP',color:'#ff2d55',weight:900}, icon:'🏪', style:'Black+Pink Bold'},
+  {id:10, b:{text:'bargain',color:'#ec4899',weight:700}, d:{text:'drop',color:'#be185d',weight:900}, icon:'💖', style:'Pink Gradient'},
+  {id:11, b:{text:'Bargain',color:'#6366f1',weight:800}, d:{text:'Drop',color:'#4f46e5',weight:600}, icon:'🎯', style:'Indigo'},
+  {id:12, b:{text:'BARGAIN',color:'#dc2626',weight:900}, d:{text:'DROP',color:'#991b1b',weight:900}, icon:'🗿', style:'All Red'},
+  {id:13, b:{text:'Bargain',color:'#0891b2',weight:700}, d:{text:'Drop',color:'#06b6d4',weight:900}, icon:'🌊', style:'Teal Wave'},
+  {id:14, b:{text:'Bargain',color:'#111',weight:600}, d:{text:'Drop',color:'#fbbf24',weight:800}, icon:'⭐', style:'Dark+Gold'},
+  {id:15, b:{text:'Bargain',color:'#84cc16',weight:700}, d:{text:'Drop',color:'#4d7c0f',weight:900}, icon:'🍀', style:'Lime Green'},
+  {id:16, b:{text:'Bargain',color:'#111',weight:900}, d:{text:'Drop',color:'#111',weight:200}, icon:'🖤', style:'Black Mono'},
+  {id:17, b:{text:'Bargain',color:'#f43f5e',weight:800}, d:{text:'Drop',color:'#e11d48',weight:800}, icon:'💄', style:'Rose Red'},
+  {id:18, b:{text:'Bargain',color:'#8b5cf6',weight:700}, d:{text:'Drop',color:'#d946ef',weight:700}, icon:'🦄', style:'Violet+Fuchsia'},
+  {id:19, b:{text:'Bargain',color:'#f97316',weight:700}, d:{text:'Drop',color:'#ef4444',weight:700}, icon:'🍊', style:'Sunset Blaze'},
+  {id:20, b:{text:'Bargain',color:'#111',weight:300}, d:{text:'DROP',color:'#111',weight:900}, icon:'🖋️', style:'Light+Bold Caps'},
+  {id:21, b:{text:'Bargain',color:'#14b8a6',weight:800}, d:{text:'Drop',color:'#0d9488',weight:700}, icon:'🐬', style:'Teal'},
+  {id:22, b:{text:'Bargain',color:'#fbbf24',weight:800}, d:{text:'Drop',color:'#b45309',weight:900}, icon:'🏆', style:'Gold+Brown'},
+  {id:23, b:{text:'Bargain',color:'#22c55e',weight:700}, d:{text:'Drop',color:'#14532d',weight:900}, icon:'🌿', style:'Green Forest'},
+  {id:24, b:{text:'Bargain',color:'#ef4444',weight:600}, d:{text:'Drop',color:'#111',weight:900}, icon:'❤️', style:'Red+Black'},
+  {id:25, b:{text:'Bargain',color:'#a855f7',weight:700}, d:{text:'Drop',color:'#581c87',weight:900}, icon:'👑', style:'Royal Purple'},
+  {id:26, b:{text:'Bargain',color:'#111',weight:900}, d:{text:'Drop',color:'#d946ef',weight:800}, icon:'💜', style:'Black+Magenta'},
+  {id:27, b:{text:'Bargain',color:'#06b6d4',weight:700}, d:{text:'Drop',color:'#0891b2',weight:900}, icon:'💠', style:'Cyan Bold'},
+  {id:28, b:{text:'Bargain',color:'#fb923c',weight:800}, d:{text:'Drop',color:'#c2410c',weight:700}, icon:'🎃', style:'Pumpkin'},
+  {id:29, b:{text:'Bargain',color:'#881337',weight:700}, d:{text:'Drop',color:'#f43f5e',weight:900}, icon:'🍷', style:'Wine+Rose'},
+  {id:30, b:{text:'Bargain',color:'#3b82f6',weight:700}, d:{text:'Drop',color:'#1d4ed8',weight:900}, icon:'🔷', style:'Blue Bold'},
+  {id:31, b:{text:'Bargain',color:'#111',weight:900}, d:{text:'Drop',color:'#f97316',weight:800}, icon:'🟠', style:'Black+Orange'},
+  {id:32, b:{text:'Bargain',color:'#059669',weight:700}, d:{text:'Drop',color:'#064e3b',weight:900}, icon:'🌲', style:'Evergreen'},
+  {id:33, b:{text:'Bargain',color:'#e11d48',weight:800}, d:{text:'Drop',color:'#111',weight:900}, icon:'🎈', style:'Crimson+Black'},
+  {id:34, b:{text:'💎 Bargain',color:'#ff2d55',weight:900}, d:{text:'Drop ⚡',color:'#ff6b2b',weight:900}, icon:'💎⚡', style:'Design 34 — Diamond+Lightning'},
+  {id:35, b:{text:'Bargain',color:'#7e22ce',weight:700}, d:{text:'Drop',color:'#a21caf',weight:800}, icon:'🔮', style:'Amethyst'},
+  {id:36, b:{text:'b',color:'#ff2d55',weight:900}, d:{text:'d',color:'#111',weight:900}, icon:'🅱️', style:'Minimalist bd'},
+  {id:37, b:{text:'Bargain',color:'#1e293b',weight:800}, d:{text:'Drop',color:'#475569',weight:600}, icon:'🪨', style:'Slate'},
+  {id:38, b:{text:'Bargain',color:'#f59e0b',weight:800}, d:{text:'Drop',color:'#d97706',weight:900}, icon:'🦁', style:'Amber Gold'},
+  {id:39, b:{text:'Bargain',color:'#2dd4bf',weight:700}, d:{text:'Drop',color:'#0f766e',weight:900}, icon:'🧊', style:'Mint+Cyan'},
+  {id:40, b:{text:'Bargain',color:'#111',weight:900}, d:{text:'Drop',color:'#eab308',weight:900}, icon:'💛', style:'Black+Yellow'},
+  {id:41, b:{text:'Bargain',color:'#db2777',weight:800}, d:{text:'Drop',color:'#9d174d',weight:700}, icon:'🌸', style:'Magenta Deep'},
+  {id:42, b:{text:'Bargain',color:'#0f172a',weight:900}, d:{text:'Drop',color:'#3b82f6',weight:900}, icon:'🌌', style:'Navy+Blue'},
+  {id:43, b:{text:'Bargain',color:'#c026d3',weight:700}, d:{text:'Drop',color:'#86198f',weight:900}, icon:'💟', style:'Fuchsia'},
+  {id:44, b:{text:'Bargain',color:'#dc2626',weight:800}, d:{text:'Drop',color:'#fbbf24',weight:800}, icon:'🎪', style:'Red+Gold'},
+  {id:45, b:{text:'Bargain',color:'#1e40af',weight:700}, d:{text:'Drop',color:'#3b82f6',weight:900}, icon:'🌐', style:'Deep Blue'},
+  {id:46, b:{text:'Bargain',color:'#111',weight:400}, d:{text:'DROP',color:'#111',weight:900}, icon:'⬛', style:'Sleek Mono'},
+  {id:47, b:{text:'Bargain',color:'#b91c1c',weight:700}, d:{text:'Drop',color:'#dc2626',weight:900}, icon:'🎯', style:'Dark Red'},
+  {id:48, b:{text:'Bargain',color:'#ec4899',weight:800}, d:{text:'Drop',color:'#111',weight:900}, icon:'🎀', style:'Pink+Black'},
+  {id:49, b:{text:'Bargain',color:'#111',weight:900}, d:{text:'Drop',color:'#22c55e',weight:900}, icon:'✅', style:'Black+Green'},
+  {id:50, b:{text:'Bargain',color:'#8b5cf6',weight:800}, d:{text:'Drop',color:'#ec4899',weight:800}, icon:'🌈', style:'Violet+Pink'}
+];
+
+function renderDesigns(){
+  var grid = document.getElementById('designGrid');
+  grid.innerHTML = '';
+  designs.forEach(function(d){
+    var card = document.createElement('div');
+    card.className = 'design-card' + (selectedId === d.id ? ' selected' : '');
+    card.setAttribute('data-id', d.id);
+
+    var bStyle = 'color:'+d.b.color+';font-weight:'+d.b.weight;
+    if(d.b.style) bStyle += ';font-style:'+d.b.style;
+    var dStyle = 'color:'+d.d.color+';font-weight:'+d.d.weight;
+    if(d.d.style) dStyle += ';font-style:'+d.d.style;
+
+    card.innerHTML = '<span class="dc-num">#'+d.id+'</span><span class="dc-check">✓</span><div class="dc-logo"><span style="'+bStyle+'">'+d.b.text+'</span><span style="'+dStyle+'">'+d.d.text+'</span></div><span class="dc-style">'+d.style+'</span>';
+    card.addEventListener('click', function(){selectDesign(d.id)});
+    grid.appendChild(card);
+  });
+
+  // Pre-select design 34
+  if(!selectedId && !localStorage.getItem('bd_logo_design')){
+    selectDesign(34, true);
+  }else if(!selectedId){
+    var saved = localStorage.getItem('bd_logo_design');
+    if(saved) selectDesign(parseInt(saved), true);
+  }
+}
+
+function selectDesign(id, silent){
+  selectedId = id;
+  document.querySelectorAll('.design-card').forEach(function(c){
+    c.classList.toggle('selected', parseInt(c.getAttribute('data-id')) === id);
+  });
+  var d = designs.find(function(x){return x.id === id});
+  if(d){
+    var bStyle = 'color:'+d.b.color+';font-weight:'+d.b.weight;
+    if(d.b.style) bStyle += ';font-style:'+d.b.style;
+    var dStyle = 'color:'+d.d.color+';font-weight:'+d.d.weight;
+    if(d.d.style) dStyle += ';font-style:'+d.d.style;
+    document.getElementById('previewBox').innerHTML = '<span style="font-size:1.6rem">'+d.icon+'</span><span style="'+bStyle+'">'+d.b.text+'</span><span style="'+dStyle+'">'+d.d.text+'</span>';
+    document.getElementById('selectedInfo').textContent = 'Design #'+d.id+' — '+d.style;
+  }
+  if(!silent){
+    document.getElementById('previewSticky').scrollIntoView({behavior:'smooth'});
+  }
+}
+
+function applyDesign(){
+  if(!selectedId) return alert('Please select a design first');
+  var d = designs.find(function(x){return x.id === selectedId});
+  localStorage.setItem('bd_logo_design', JSON.stringify(d));
+  localStorage.setItem('bd_logo_id', String(d.id));
+  alert(' Logo applied! Design #'+d.id+' is now your Bargain Drop logo.');
+  window.location.href = 'index.html';
+}
+
+renderDesigns();
+</script>
+</body>
+</html>
