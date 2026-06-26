@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Bargain Drop — Premium Discounts</title>
+<style>
+:root{--bg:#fff;--fg:#111;--muted:#777;--line:#eee;--red:#e60023;--accent:#ff6b2b;--accent2:#ff4590}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--fg);padding-bottom:80px}
+a{color:inherit;text-decoration:none}
+
+.sale-banner{background:linear-gradient(90deg,#ff2d55,#ff6b2b,#ffcc00,#ff2d55);background-size:300% 100%;animation:saleScroll 4s linear infinite;color:#fff;text-align:center;padding:6px 0;font-size:0.72rem;font-weight:700;letter-spacing:1px;position:sticky;top:0;z-index:200;white-space:nowrap;overflow:hidden}
+.sale-banner .scroll-text{display:inline-block;animation:marquee 12s linear infinite;padding:0 20px}
+@keyframes saleScroll{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+.top-bar{display:flex;align-items:center;justify-content:space-between;padding:6px 16px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:24px;z-index:100;gap:10px}
+.logo-area{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.logo-text{font-size:1.1rem;font-weight:900}
+.logo-text .b{color:#ff2d55}
+.logo-text .d{color:#111}
+.logo-img{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,#ff2d55,#ff6b2b);display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:#fff;font-weight:900}
+
+.top-actions{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.icon-btn{background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;position:relative}
+.icon-btn svg{width:22px;height:22px;stroke:#111;fill:none;stroke-width:1.8}
+.cart-badge{position:absolute;top:-4px;right:-6px;background:var(--red);color:#fff;font-size:0.55rem;font-weight:700;padding:1px 5px;border-radius:10px;min-width:16px;text-align:center}
+
+.search-wrap{flex:1;max-width:300px;margin-left:auto;position:relative}
+.search-input{width:100%;padding:7px 14px 7px 34px;border:1.5px solid #e0e0e0;border-radius:20px;font-size:0.75rem;outline:none;background:#f8f8f8;transition:all .2s}
+.search-input:focus{border-color:var(--accent);background:#fff}
+.search-wrap .search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none}
+.search-wrap .search-icon svg{width:15px;height:15px;stroke:#999;fill:none;stroke-width:2}
+
+.cat-slider-section{padding:12px 0 4px}
+.cat-slider-title{font-size:0.82rem;font-weight:800;padding:0 16px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.cat-slider-wrapper{overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:0 12px;scrollbar-width:none}
+.cat-slider-wrapper::-webkit-scrollbar{display:none}
+.cat-slider{display:flex;gap:10px}
+.cat-slide{flex:0 0 auto;width:110px;scroll-snap-align:start;text-align:center;cursor:pointer;transition:transform .15s}
+.cat-slide:hover{transform:translateY(-2px)}
+.cat-slide-img{width:110px;height:80px;border-radius:12px;background:linear-gradient(135deg,#f5f5f5,#e8e8e8);display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:6px;border:2px solid transparent;transition:border-color .15s}
+.cat-slide:hover .cat-slide-img{border-color:var(--accent)}
+.cat-slide-img img{width:100%;height:100%;object-fit:cover;border-radius:10px}
+.cat-slide-label{font-size:0.65rem;font-weight:600;color:var(--fg);line-height:1.2}
+.cat-slide-count{font-size:0.55rem;color:var(--muted)}
+
+.featured-section{padding:16px 16px 8px}
+.featured-title{font-size:0.85rem;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.product-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.product-card{background:#fff;border-radius:12px;overflow:hidden;border:1px solid var(--line);transition:all .15s;cursor:pointer}
+.product-card:hover{box-shadow:0 3px 16px rgba(0,0,0,.08);transform:translateY(-2px)}
+.prod-img{aspect-ratio:1;background:#f5f5f5;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.prod-img img{width:100%;height:100%;object-fit:cover}
+.prod-badge{position:absolute;top:8px;left:8px;background:var(--red);color:#fff;font-size:0.58rem;font-weight:700;padding:3px 8px;border-radius:4px}
+.prod-info{padding:8px 10px 10px}
+.prod-title{font-size:0.72rem;font-weight:600;line-height:1.3;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin-bottom:4px}
+.prod-price-row{display:flex;align-items:center;gap:6px}
+.prod-price{font-size:0.85rem;font-weight:800;color:var(--red)}
+.prod-compare{font-size:0.62rem;color:var(--muted);text-decoration:line-through}
+.prod-discount{font-size:0.58rem;color:#10b981;font-weight:600}
+
+.loading{display:flex;align-items:center;justify-content:center;padding:60px 20px;color:var(--muted);flex-direction:column;gap:12px}
+.spinner{width:32px;height:32px;border:3px solid #e5e5e5;border-top-color:#111;border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;z-index:120;padding:4px 0;box-shadow:0 -2px 10px rgba(0,0,0,.03)}
+.bottom-nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px;font-size:0.6rem;color:var(--muted);text-decoration:none}
+.bottom-nav a.active,.bottom-nav a:hover{color:var(--fg)}
+.nav-icon{width:20px;height:20px;flex-shrink:0}
+
+@media(min-width:768px){.product-grid{grid-template-columns:repeat(4,1fr);max-width:960px;margin:0 auto}.cat-slide{width:130px}.cat-slide-img{width:130px;height:90px}}
+</style>
+</head>
+<body>
+
+<div class="sale-banner">
+  <span class="scroll-text"> SUMMER MEGA SALE — UP TO 70% OFF — FREE SHIPPING ON ORDERS $29+ — USE CODE: SUMMER25 FOR EXTRA 25% OFF — HURRY, ENDS SOON! </span>
+</div>
+
+<div class="top-bar">
+  <a href="/" class="logo-area">
+    <div class="logo-img">BD</div>
+    <span class="logo-text"><span class="b">Bargain</span><span class="d">Drop</span></span>
+  </a>
+  <form class="search-wrap" onsubmit="event.preventDefault();searchProducts()">
+    <span class="search-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+    <input type="text" class="search-input" id="searchInput" placeholder="Search Bargain Drop...">
+  </form>
+  <div class="top-actions">
+    <a href="#" class="icon-btn" id="cartBtn" onclick="event.preventDefault()">
+      <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+      <span class="cart-badge" id="cartCount">0</span>
+    </a>
+    <a href="profile.html" class="icon-btn">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </a>
+  </div>
+</div>
+
+<div class="cat-slider-section">
+  <div class="cat-slider-title">
+    <svg width="18" height="18" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1" stroke="#111" stroke-width="1.8" fill="none"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="#111" stroke-width="1.8" fill="none"/><rect x="3" y="14" width="7" height="7" rx="1" stroke="#111" stroke-width="1.8" fill="none"/><rect x="14" y="14" width="7" height="7" rx="1" stroke="#111" stroke-width="1.8" fill="none"/></svg>
+    Shop by Category
+  </div>
+  <div class="cat-slider-wrapper">
+    <div class="cat-slider" id="catSlider">
+      <div class="loading"><div class="spinner"></div><p>Loading categories...</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="featured-section" id="productsSection">
+  <div class="featured-title">
+    <svg width="18" height="18" viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" stroke="#111" stroke-width="1.5" fill="none"/></svg>
+    Trending Products
+  </div>
+  <div class="product-grid" id="productGrid">
+    <div class="loading" style="grid-column:1/-1"><div class="spinner"></div><p>Loading products...</p></div>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <a href="/" class="active">
+    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke="#111" stroke-width="2" fill="none"/></svg>
+    Home
+  </a>
+  <a href="products.html">
+    <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1" stroke="#777" stroke-width="1.5" fill="none"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="#777" stroke-width="1.5" fill="none"/><rect x="3" y="14" width="7" height="7" rx="1" stroke="#777" stroke-width="1.5" fill="none"/><rect x="14" y="14" width="7" height="7" rx="1" stroke="#777" stroke-width="1.5" fill="none"/></svg>
+    Products
+  </a>
+  <a href="categories.html">
+    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="#777" stroke-width="2"/></svg>
+    Categories
+  </a>
+  <a href="#">
+    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" stroke="#777" stroke-width="1.5" fill="none"/></svg>
+    Wishlist
+  </a>
+  <a href="profile.html">
+    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="#777" stroke-width="2" fill="none"/><circle cx="12" cy="7" r="4" stroke="#777" stroke-width="2" fill="none"/></svg>
+    Me
+  </a>
+</nav>
+
+<script>
+async function loadData(){
+  try{
+    var res = await fetch('categories-data.json');
+    var data = await res.json();
+    var allCats = Object.entries(data);
+    var allProducts = [];
+    var sliderHtml = '';
+
+    allCats.forEach(function(entry){
+      var key = entry[0];
+      var cat = entry[1];
+      var prods = cat.products || [];
+      prods.forEach(function(p){
+        p.category = key;
+        allProducts.push(p);
+      });
+
+      var firstProd = cat.products && cat.products.length > 0 ? cat.products[0] : null;
+      var imgSrc = firstProd && firstProd.image ? firstProd.image : '';
+      var emoji = cat.emoji || '';
+      var imgHtml = imgSrc ? '<img src="'+imgSrc+'" alt="" loading="lazy" onerror="this.style.display=\'none\';this.parentElement.innerHTML=\'<span style=&quot;font-size:1.5rem&quot;>'+emoji+'</span>\'">' : '<span style="font-size:1.5rem">'+emoji+'</span>';
+      sliderHtml += '<a href="categories.html?cat='+encodeURIComponent(key)+'" class="cat-slide"><div class="cat-slide-img">'+imgHtml+'</div><div class="cat-slide-label">'+esc(key)+'</div><div class="cat-slide-count">'+cat.total_products+' products</div></a>';
+    });
+
+    document.getElementById('catSlider').innerHTML = sliderHtml;
+
+    var grid = document.getElementById('productGrid');
+    var trending = allProducts.slice(0, 20);
+    grid.innerHTML = '';
+    if(trending.length === 0){
+      grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);grid-column:1/-1"><p>No products yet</p></div>';
+    } else {
+      trending.forEach(function(p){
+        var discount = p.compare_at_price && p.price ? Math.round((1 - p.price/p.compare_at_price)*100) : 0;
+        var badge = discount >= 40 ? '<div class="prod-badge">-'+discount+'%</div>' : '';
+        var img = p.image ? '<img src="'+p.image+'" alt="" loading="lazy">' : '<span style="font-size:2.5rem;color:#ccc"></span>';
+        var card = document.createElement('a');
+        card.className = 'product-card';
+        card.href = 'product.html?id='+p.id;
+        card.innerHTML = '<div class="prod-img">'+badge+img+'</div><div class="prod-info"><div class="prod-title">'+esc(p.title)+'</div><div class="prod-price-row"><span class="prod-price">$'+(p.price||0).toFixed(2)+'</span>'+(p.compare_at_price?'<span class="prod-compare">$'+p.compare_at_price.toFixed(2)+'</span>':'')+(discount?'<span class="prod-discount">-'+discount+'%</span>':'')+'</div></div>';
+        grid.appendChild(card);
+      });
+    }
+  }catch(e){
+    document.getElementById('catSlider').innerHTML = '<div class="loading" style="padding:20px"><p>Failed to load categories. <a href="javascript:location.reload()" style="color:var(--red)">Retry</a></p></div>';
+    document.getElementById('productGrid').innerHTML = '<div class="loading" style="grid-column:1/-1"><p>Failed to load products. <a href="javascript:location.reload()" style="color:var(--red)">Retry</a></p></div>';
+  }
+}
+
+function esc(t){return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function searchProducts(){
+  var q = document.getElementById('searchInput').value.trim();
+  if(q) window.location.href = 'products.html?q='+encodeURIComponent(q);
+}
+
+loadData();
+</script>
+</body>
+</html>
