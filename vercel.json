@@ -1,1 +1,7 @@
-{"version":2,"buildCommand":"","outputDirectory":".","installCommand":"","framework":null}
+{
+  "version": 2,
+  "buildCommand": "",
+  "outputDirectory": ".",
+  "installCommand": "",
+  "framework": null
+}
